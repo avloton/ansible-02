@@ -6,7 +6,7 @@
 
 Служит для установки `Clickhouse`.
 
-- Install Vector - для установки `Vector`.
+- Install Vector.
 
 Служит для установки `Vector`.
 
