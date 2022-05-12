@@ -40,7 +40,7 @@
       changed_when: create_db.rc == 0
 - name: Install Vector
   tags: vector
-  hosts: clickhouse
+  hosts: vector
   handlers:
     - name: Start Vector
       become: true
