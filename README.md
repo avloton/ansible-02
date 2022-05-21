@@ -1,6 +1,6 @@
 # Описание Playbook
 
-Данный Playbook содержит два Plays: 
+Данный Playbook содержит три Plays: 
 
 - Install Clickhouse.
 
@@ -9,6 +9,10 @@
 - Install Vector.
 
 Служит для установки `Vector`.
+
+- Install LightHouse.
+
+Служит для установки `LightHouse`.
 
 ## Tasks
 
@@ -46,6 +50,31 @@
 
 Подготовка шаблона файла конфигурации для `vector`.
 
+- Check Host.
+
+Проверка на то, что на хосте установлен дистрибутив `Centos`.
+Если проверка не пройдена, то дальнейшие задачи на хосте не выполняем.
+
+- Install repository EPEL.
+
+Установка репозитория EPEL.
+
+- Install Git.
+
+Установка `Git`.
+
+- Install Nginx.
+
+Установка `Nginx`.
+
+- Clear web directory.
+
+Очистка директории, в которую будем ложить файлы `LightHouse`.
+
+- Clone LightHouse repository.
+
+Клонирование репозитория `LightHouse`, запланировать вызов handler `Start Nginx`.
+
 ## Handlers
 
 Описание Handlers:
@@ -58,6 +87,11 @@
 
 Перезагрузка демона `systemd`, включение службы `vector` в `systemd`, перезапуск службы `vector`. 
 
+- Start Nginx.
+
+Перезагрузка демона `systemd`, включение службы `nginx` в `systemd`, перезапуск службы `nginx`. 
+
+
 ## Tags
 
 Описание Tags:
@@ -69,3 +103,7 @@
 - vector.
 
 Тэг присвоен для Play `Install Vector`. Может служить для установки `Vector`.
+
+- lighthouse.
+
+Тэг присвоен для Play `Install LightHouse`. Может служить для установки `LightHouse`.
