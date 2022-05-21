@@ -30,7 +30,12 @@
           - clickhouse-client-{{ clickhouse_version }}.rpm
           - clickhouse-server-{{ clickhouse_version }}.rpm
       notify: Start clickhouse service
-      changed_when: true
+    - name: ClickHouse config
+      become: true
+      ansible.builtin.template:
+        src: ./templates/clickhouse_server.j2
+        dest: /etc/clickhouse-server/config.d/my_config.xml
+        mode: 0644
     - name: Restart ClickHouse
       ansible.builtin.meta: flush_handlers
     - name: Create database
@@ -68,3 +73,45 @@
         src: ./templates/vector.j2
         dest: /etc/vector/vector.toml
         mode: 0644
+- name: Install LightHouse
+  tags: lighthouse
+  hosts: lighthouse
+  handlers:
+    - name: Start Nginx
+      become: true
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+        daemon_reload: true
+        enabled: true
+  tasks:
+    - name: Check Host
+      ansible.builtin.meta: end_host
+      when: ansible_distribution  != "CentOS"
+    - name: Install repository EPEL
+      become: true
+      ansible.builtin.yum:
+        name:
+          - epel-release
+    - name: Install Git
+      become: true
+      ansible.builtin.yum:
+        name:
+          - git
+    - name: Install Nginx
+      become: true
+      ansible.builtin.yum:
+        name:
+          - nginx
+    - name: Clear web directory
+      become: true
+      ansible.builtin.file:
+        path: /usr/share/nginx/html
+        state: absent
+    - name: Clone LightHouse repository
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/VKCOM/lighthouse.git
+        dest: /usr/share/nginx/html
+        version: master
+      notify: Start Nginx
